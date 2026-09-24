@@ -32,7 +32,11 @@ public class OrangeRunner {
         pimPage.clickOnAddEmployeeButton();
 
         // REGISTER EMPLOYEE
+        String firstName = "Carlos";
+        //String middleName = "Alberto";
+        //String lastName = "Rojas";
         String employeeId = "QA123";
+
         EmployeePage employeePage = new EmployeePage(driver);
         employeePage.registerEmployee("Carlos", "Alberto", "Rojas", employeeId);
 
@@ -41,6 +45,9 @@ public class OrangeRunner {
 
         //SEARCH CREATED EMPLOYEE
         pimPage.searchEmployeeById(employeeId);
+
+        //SEEARCH CREATED EMPLOYEE BY NAME
+        pimPage.searchEmployeeByName(firstName);
 
         Thread.sleep(5000);
         driver.quit();

@@ -13,6 +13,11 @@ public class PIMPage extends BasePage{
     private final By employeeListButton = By.linkText("Employee List");
     private final By inputEmployeeId = By.xpath("//label[contains(., \"Employee Id\")]/parent::div/following-sibling::div/input");
     private final By searchButton = By.xpath("//div[@class=\"oxd-form-actions\"]/button[contains(., \" Search \")]");
+    //nuevo localizador por nombre
+    private final By inputEmployeeName = By.xpath("//label[contains(., \"Employee Name\")]/parent::div/following-sibling::div//input");
+    //localizador de la tabla de resultados
+    private final By tableRecord = By.className("orangehrm-container");
+
 
     public PIMPage(WebDriver driver) {
         super(driver);
@@ -38,5 +43,21 @@ public class PIMPage extends BasePage{
     public void searchEmployeeById(String employeeId) {
         typeEmployeeId(employeeId);
         clickOnSearchButton();
+    }
+
+    // escribe el nombre del empleado en el buscador
+    public void typeEmployeeName(String employeeName) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(inputEmployeeName)).sendKeys(employeeName);
+    }
+
+    // ejecuta la búsqueda combinada escribiendo el nombre y presionando Search
+    public void searchEmployeeByName(String employeeName) {
+        typeEmployeeName(employeeName);
+        clickOnSearchButton();
+    }
+
+    //verificar si la tabla cargó el empleado creado despues la búsqueda
+    public boolean isEmployeeFound() {
+    return wait.until(ExpectedConditions.visibilityOfElementLocated(tableRecord)).isDisplayed();
     }
 }
