@@ -11,6 +11,7 @@ public class LoginPage extends BasePage{
     private final By inputUsername = By.name("username");
     private final By inputPassword = By.name("password");
     private final By loginButton = By.cssSelector("button.orangehrm-login-button");
+    private final By pimMenu = By.linkText("PIM");
     private final WebDriverWait wait;
 
     public LoginPage(WebDriver driver) {
@@ -34,5 +35,9 @@ public class LoginPage extends BasePage{
         typeUsername(user);
         typePassword(pass);
         clickOnLoginButton();
+    }
+
+    public boolean isLoginSuccessful() {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(pimMenu)).isDisplayed();
     }
 }
