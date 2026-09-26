@@ -12,8 +12,8 @@ public class PIMPage extends BasePage{
     private final By addEmployeeButton = By.linkText("Add Employee");
     private final By employeeListButton = By.linkText("Employee List");
     private final By inputEmployeeName = By.xpath("//label[contains(., 'Employee Name')]/parent::div/following-sibling::div//input");
-    private final By inputEmployeeId = By.xpath("//label[contains(., \"Employee Id\")]/parent::div/following-sibling::div/input");
-    private final By searchButton = By.xpath("//div[@class=\"oxd-form-actions\"]/button[contains(., \" Search \")]");
+    private final By inputEmployeeId = By.xpath("//label[contains(., 'Employee Id')]/parent::div/following-sibling::div/input");
+    private final By searchButton = By.xpath("//div[@class='oxd-form-actions']/button[contains(., 'Search')]");
 
     public PIMPage(WebDriver driver) {
         super(driver);
