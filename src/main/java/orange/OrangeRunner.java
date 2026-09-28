@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import pages.EmployeePage;
 import pages.LoginPage;
+import pages.PersonalDetailsPage;
 import pages.PIMPage;
 import pages.SideMenuPage;
 
@@ -16,34 +17,43 @@ public class OrangeRunner {
 
     public void setup() throws InterruptedException {
         driver = new ChromeDriver(getChromeOptions());
-        driver.get("https://opensource-demo.orangehrmlive.com/");
-        driver.manage().window().maximize();
+        try {
+            driver.get("https://opensource-demo.orangehrmlive.com/");
+            driver.manage().window().maximize();
 
-        //LOGIN
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.loginAs("Admin", "admin123");
+            LoginPage loginPage = new LoginPage(driver);
+            loginPage.loginAs("Admin", "admin123");
 
-        //ENTRAR A PIM
-        SideMenuPage sideMenuPage = new SideMenuPage(driver);
-        sideMenuPage.selectPage();
+            SideMenuPage sideMenuPage = new SideMenuPage(driver);
+            sideMenuPage.selectPage();
 
-        // GO TO ADD EMPLOYEE
-        PIMPage pimPage = new PIMPage(driver);
-        pimPage.clickOnAddEmployeeButton();
+            PIMPage pimPage = new PIMPage(driver);
+            pimPage.clickOnAddEmployeeButton();
 
-        // REGISTER EMPLOYEE
-        String employeeId = "QA123";
-        EmployeePage employeePage = new EmployeePage(driver);
-        employeePage.registerEmployee("Carlos", "Alberto", "Rojas", employeeId);
+            String employeeName = "Carlos";
+            EmployeePage employeePage = new EmployeePage(driver);
+            String employeeId = employeePage.registerEmployee(employeeName, "Alberto", "Rojas",
+                    "carlos.rojas", "OrangeDemo123!");
 
-        //GO TO EMPLOYEE LIST
-        pimPage.clickOnEmployeeList();
+            PersonalDetailsPage personalDetailsPage = new PersonalDetailsPage(driver);
+            personalDetailsPage.fillPersonalDetails("DL123456", "2030-12-31", "American",
+                    "Single", "1995-05-15");
+            personalDetailsPage.savePersonalDetails();
+            personalDetailsPage.fillCustomFields("A+", "Automation test");
+            personalDetailsPage.saveCustomFields();
+            String attachmentPath = System.getProperty(
+                    "attachmentPath", "src/test/resources/attachments/employee-attachment.png");
+            personalDetailsPage.addAttachment(attachmentPath, "Employee attachment");
 
-        //SEARCH CREATED EMPLOYEE
-        pimPage.searchEmployeeById(employeeId);
-
-        Thread.sleep(5000);
-        driver.quit();
+            pimPage.clickOnEmployeeList();
+            if (!pimPage.searchEmployeeByName(employeeName)) {
+                throw new IllegalStateException("The created employee was not found in the employee list");
+            }
+        } finally {
+            if (driver != null) {
+                driver.quit();
+            }
+        }
     }
 
     public static void main(String[] args) throws InterruptedException {
