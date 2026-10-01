@@ -1,0 +1,18 @@
+[
+  {
+    "firstName": "Carlos",
+    "middleName": "Alberto",
+    "lastName": "Rojas",
+    "username": "carlos.rojas",
+    "password": "OrangeDemo123!",
+    "status": "Enabled"
+  },
+  {
+    "firstName": "Ana",
+    "middleName": "Maria",
+    "lastName": "Torres",
+    "username": "ana.torres",
+    "password": "OrangeDemo123!",
+    "status": "Enabled"
+  }
+]

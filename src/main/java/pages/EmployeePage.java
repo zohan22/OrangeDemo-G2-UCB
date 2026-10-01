@@ -52,10 +52,12 @@ public class EmployeePage extends BasePage {
         wait.until(ExpectedConditions.visibilityOfElementLocated(inputUsername)).sendKeys(username);
     }
 
-    public void selectEnabledStatus() {
-        WebElement status = wait.until(ExpectedConditions.elementToBeClickable(enabledStatus));
-        if (!status.isSelected()) {
-            status.click();
+    public void selectStatus(String statusValue) {
+        if ("Enabled".equalsIgnoreCase(statusValue)) {
+            WebElement status = wait.until(ExpectedConditions.elementToBeClickable(enabledStatus));
+            if (!status.isSelected()) {
+                status.click();
+            }
         }
     }
 
@@ -76,14 +78,14 @@ public class EmployeePage extends BasePage {
     }
 
     public String registerEmployee(String name, String middle, String lastName,
-                                   String username, String password) {
+                                   String username, String password, String status) {
         typeFirstName(name);
         typeMiddleName(middle);
         typeLastName(lastName);
         String employeeId = getEmployeeId();
         clickCreateLoginDetails();
         typeUsername(username);
-        selectEnabledStatus();
+        selectStatus(status);
         typePassword(password);
         typeConfirmPassword(password);
         clickOnSaveButton();

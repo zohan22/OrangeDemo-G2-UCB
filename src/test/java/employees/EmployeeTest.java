@@ -1,26 +1,23 @@
 package employees;
 
 import base.BaseTest;
+import helper.JsonTestDataHelper;
+import models.Employee;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import pages.EmployeeListPage;
 import pages.EmployeePage;
 import pages.LoginPage;
-import pages.PersonalDetailsPage;
 import pages.PIMPage;
 import pages.SideMenuPage;
 
+import java.io.FileNotFoundException;
 import java.util.UUID;
 
 public class EmployeeTest extends BaseTest {
 
     @Test(dataProvider = "employeeDataProvider")
-    public void testCreatedEmployeeIsDisplayed(String firstName, String middleName, String lastName,
-                                               String username, String password, String license,
-                                               String licenseExpiry, String nationality, String maritalStatus,
-                                               String birthDate, String bloodType, String testField,
-                                               String comment) {
+    public void testCreatedEmployeeIsDisplayed(Employee employee) {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.loginAs("Admin", "admin123");
 
@@ -31,36 +28,25 @@ public class EmployeeTest extends BaseTest {
         pimPage.clickOnAddEmployeeButton();
 
         String uniqueSuffix = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
-        firstName += uniqueSuffix;
-        lastName += uniqueSuffix;
+        String firstName = employee.getFirstName() + uniqueSuffix;
+        String middleName = employee.getMiddleName();
+        String lastName = employee.getLastName() + uniqueSuffix;
+        String username = employee.getUsername() + uniqueSuffix;
 
         EmployeePage employeePage = new EmployeePage(driver);
         String employeeId = employeePage.registerEmployee(firstName, middleName, lastName,
-                username + uniqueSuffix, password);
+                username, employee.getPassword(), employee.getStatus());
 
-        PersonalDetailsPage personalDetailsPage = new PersonalDetailsPage(driver);
-        personalDetailsPage.fillPersonalDetails(license, licenseExpiry, nationality, maritalStatus, birthDate);
-        personalDetailsPage.savePersonalDetails();
-        personalDetailsPage.fillCustomFields(bloodType, testField);
-        personalDetailsPage.saveCustomFields();
-        personalDetailsPage.addAttachment(
-                System.getProperty("attachmentPath",
-                        "src/test/resources/attachments/employee-attachment.png"), comment);
+        pimPage.openEmployeeList();
+        pimPage.searchById(employeeId);
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(driver);
-        employeeListPage.open();
-        employeeListPage.searchById(employeeId);
-
-        Assert.assertTrue(employeeListPage.isEmployeeDisplayedById(employeeId),
+        Assert.assertTrue(pimPage.isEmployeeDisplayedById(employeeId),
                 "The created employee was not found in the employee list");
     }
 
     @DataProvider(name = "employeeDataProvider")
-    public Object[][] employeeDataProvider() {
-        return new Object[][]{{
-                "Carlos", "Alberto", "Rojas", "carlos.rojas", "OrangeDemo123!",
-                "DL123456", "2030-12-31", "American", "Single", "1995-05-15",
-                "A+", "Automation test", "Employee attachment"
-        }};
+    public Object[] employeeDataProvider() throws FileNotFoundException {
+        return JsonTestDataHelper.getInstance().getTestData(
+                "src/test/resources/testdata/employee/employeeData.json", Employee.class);
     }
 }

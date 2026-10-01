@@ -6,6 +6,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import listeners.ExtentTestListener;
 
 import java.util.HashMap;
@@ -16,8 +18,9 @@ public class BaseTest {
     protected WebDriver driver;
 
     @BeforeMethod
-    public void setUp() {
-        driver = new ChromeDriver(getChromeOptions());
+    @Parameters("browser")
+    public void setUp(@Optional("chrome") String browser) {
+        driver = createDriver(browser);
         driver.get("https://opensource-demo.orangehrmlive.com/");
         driver.manage().window().maximize();
     }
@@ -27,6 +30,13 @@ public class BaseTest {
         if (driver != null) {
             driver.quit();
         }
+    }
+
+    private WebDriver createDriver(String browser) {
+        if ("firefox".equalsIgnoreCase(browser)) {
+            return new org.openqa.selenium.firefox.FirefoxDriver();
+        }
+        return new ChromeDriver(getChromeOptions());
     }
 
     private ChromeOptions getChromeOptions() {
